@@ -1,0 +1,95 @@
+name: test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  perl:
+    name: perl ${{ matrix.perl }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        perl: ['5.16', '5.20', '5.24', '5.28', '5.32', '5.36', '5.38', 'latest']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up perl ${{ matrix.perl }}
+        uses: shogo82148/actions-setup-perl@v1
+        with:
+          perl-version: ${{ matrix.perl }}
+
+      - run: perl -V
+
+      - name: Install dependencies
+        run: cpanm --notest --installdeps .
+
+      # Only RSA-SHA1 needs this, and it is a recommends rather than a hard
+      # prereq, so a build failure here must not fail the job -- t/02-rsa.t
+      # skips cleanly when it is missing.
+      - name: Install Crypt::OpenSSL::RSA (optional)
+        run: |
+          cpanm --notest Crypt::OpenSSL::RSA \
+            || echo "::warning::Crypt::OpenSSL::RSA unavailable on perl ${{ matrix.perl }}; RSA-SHA1 tests will skip"
+
+      - name: Build
+        run: |
+          perl Makefile.PL
+          make
+
+      - name: Test
+        run: make test
+
+  # Net-OAuth was removed from Debian testing because Crypt::OpenSSL::RSA
+  # changed its default padding underneath us (Debian #1142954). Nothing in a
+  # single-version matrix catches that class of drift, so pin the versions that
+  # bracket the behaviour change and assert all of them stay green.
+  crypt-openssl-rsa:
+    name: Crypt::OpenSSL::RSA ${{ matrix.rsa }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        rsa:
+          - '0.34'    # last release before PKCS#1 v1.5 was disabled
+          - '0.37'    # v1.5 disabled: RSA-SHA1 impossible, tests must skip
+          - '0.38'    # v1.5 re-enabled (PR #103)
+          - 'latest'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up perl
+        uses: shogo82148/actions-setup-perl@v1
+        with:
+          perl-version: 'latest'
+
+      - name: Install dependencies
+        run: cpanm --notest --installdeps .
+
+      - name: Install Crypt::OpenSSL::RSA ${{ matrix.rsa }}
+        run: |
+          if [ "${{ matrix.rsa }}" = "latest" ]; then
+            cpanm --notest Crypt::OpenSSL::RSA
+          else
+            cpanm --notest "Crypt::OpenSSL::RSA@${{ matrix.rsa }}"
+          fi
+          perl -MCrypt::OpenSSL::RSA \
+            -e 'print "Crypt::OpenSSL::RSA $Crypt::OpenSSL::RSA::VERSION\n"'
+
+      - name: Build
+        run: |
+          perl Makefile.PL
+          make
+
+      - name: Test
+        run: make test
+
+      # A skip is the correct outcome on 0.35-0.37 but an invisible one, so
+      # make the log state which path was taken.
+      - name: Show RSA-SHA1 test detail
+        run: prove -lv t/02-rsa.t
