@@ -44,6 +44,32 @@ jobs:
       - name: Test
         run: make test
 
+  # xt/ is guarded by AUTHOR_TESTING so it never fires for downstream builders,
+  # which means it only ever runs if something runs it deliberately.
+  author:
+    name: author tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up perl
+        uses: shogo82148/actions-setup-perl@v1
+        with:
+          perl-version: 'latest'
+
+      - name: Install dependencies
+        run: |
+          cpanm --notest --installdeps .
+          cpanm --notest Test::Pod
+
+      # Deliberately not built first: xt/author/manifest.t compares the tree
+      # against MANIFEST, so it wants a clean checkout.
+      - name: Author tests
+        env:
+          AUTHOR_TESTING: 1
+        run: prove -lr xt/
+
   # Net-OAuth was removed from Debian testing because Crypt::OpenSSL::RSA
   # changed its default padding underneath us (Debian #1142954). Nothing in a
   # single-version matrix catches that class of drift, so pin the versions that

@@ -19,6 +19,27 @@ Revision history for Net-OAuth
        [Toolchain]
        - Recommend Crypt::OpenSSL::RSA 0.38 or later for RSA-SHA1.
 
+       - Declared MIN_PERL_VERSION as 5.008001, the floor imposed by URI
+         and MIME::Base32.
+
+       - Added GitHub Actions CI covering perl 5.16 through latest, and a
+         matrix pinning the Crypt::OpenSSL::RSA versions that bracket the
+         padding change behind Debian #1142954.
+
+       - Added author tests under xt/, guarded by AUTHOR_TESTING.
+
+       - MANIFEST now ships CONTRIBUTING.md, and no longer lists the
+         generated META.json and META.yml, which distmeta writes into the
+         distribution directory regardless.
+
+       [Documentation]
+       - Removed the Dancer demo application and rewrote the SYNOPSIS and
+         README to be framework-agnostic. The demo linked to a domain that
+         is now parked.
+
+       - Added =encoding utf8 to Net::OAuth, which had a non-ASCII
+         contributor name in its POD without one.
+
        [Documentation]
        - Added missing version and timestamp to Changes for v0.31.
 

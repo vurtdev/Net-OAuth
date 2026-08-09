@@ -1,4 +1,5 @@
-# Avoid version control files.
+# Avoid version control and CI files.
+^\.github/
 \bRCS\b
 \bCVS\b
 ,v$

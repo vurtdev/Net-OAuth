@@ -19,53 +19,32 @@ Net::OAuth::Client - OAuth 1.0A Client
 
 =head1 SYNOPSIS
 
-  # Web Server Example (Dancer)
-
-  # This example is simplified for illustrative purposes, see the complete code in /demo
-
-  # Note that client_id is the Consumer Key and client_secret is the Consumer Secret
-
-  use Dancer;
   use Net::OAuth::Client;
 
-  sub client {
-  	Net::OAuth::Client->new(
-  		config->{client_id},
-  		config->{client_secret},
-  		site => 'https://www.google.com/',
-  		request_token_path => '/accounts/OAuthGetRequestToken?scope=https%3A%2F%2Fwww.google.com%2Fm8%2Ffeeds%2F',
-  		authorize_path => '/accounts/OAuthAuthorizeToken',
-  		access_token_path => '/accounts/OAuthGetAccessToken',
-  		callback => uri_for("/auth/google/callback"),
-  		session => \&session,
-  	);
-  }
+  # client_id is the Consumer Key, client_secret the Consumer Secret.
+  # Framework-agnostic: supply your own redirect and session handling.
 
-  # Send user to authorize with service provider
-  get '/auth/google' => sub {
-  	redirect client->authorize_url;
-  };
+  my $client = Net::OAuth::Client->new(
+      $client_id,
+      $client_secret,
+      site               => 'https://provider.example/',
+      request_token_path => '/oauth/request_token',
+      authorize_path     => '/oauth/authorize',
+      access_token_path  => '/oauth/access_token',
+      callback           => 'https://you.example/auth/callback',
+      session            => \&session,
+  );
 
-  # User has returned with token and verifier appended to the URL.
-  get '/auth/google/callback' => sub {
+  # 1. Send the user to the provider to authorize.
+  $client->authorize_url;
 
-  	# Use the auth code to fetch the access token
-  	my $access_token =  client->get_access_token(params->{oauth_token}, params->{oauth_verifier});
+  # 2. They return to your callback with oauth_token and oauth_verifier.
+  my $access_token = $client->get_access_token($token, $verifier);
 
-  	# Use the access token to fetch a protected resource
-  	my $response = $access_token->get('/m8/feeds/contacts/default/full');
-
-  	# Do something with said resource...
-
-  	if ($response->is_success) {
-  	  return "Yay, it worked: " . $response->decoded_content;
-  	}
-  	else {
-  	  return "Error: " . $response->status_line;
-  	}
-  };
-
-  dance;
+  # 3. Use the access token to fetch a protected resource.
+  my $response = $access_token->get('/profile');
+  die $response->status_line unless $response->is_success;
+  print $response->decoded_content;
 
 =head1 DESCRIPTION
 
