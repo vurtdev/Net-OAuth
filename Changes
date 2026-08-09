@@ -1,5 +1,24 @@
 Revision history for Net-OAuth
 
+       [Bug Fixes]
+       - RSA-SHA1 now pins PKCS#1 v1.5 padding and the SHA-1 hash rather
+         than inheriting Crypt::OpenSSL::RSA's defaults, which have drifted
+         (SHA-256 in 0.29_01, RSA-PSS in 0.35). Against 0.35 and later this
+         produced RSA-PSS signatures that no RFC 5849 3.4.3 compliant server
+         will accept. Reported as Debian #1142954.
+
+       [Tests]
+       - t/02-rsa.t asserts the signature base string separately from the
+         signature, so a failure distinguishes base-string construction from
+         the crypto layer.
+
+       - t/02-rsa.t skips with a diagnostic on Crypt::OpenSSL::RSA 0.35
+         through 0.37, which disabled the PKCS#1 v1.5 padding that OAuth
+         RSA-SHA1 requires; 0.38 re-enabled it.
+
+       [Toolchain]
+       - Recommend Crypt::OpenSSL::RSA 0.38 or later for RSA-SHA1.
+
        [Documentation]
        - Added missing version and timestamp to Changes for v0.31.
 

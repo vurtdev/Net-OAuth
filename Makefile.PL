@@ -27,9 +27,24 @@ WriteMakefile(
     'EXE_FILES'   => [],
     'PL_FILES'    => {},
     'META_MERGE'  => {
+        'meta-spec' => { version => 2 },
+        prereqs     => {
+            # Only needed for the RSA-SHA1 signature method, so not a hard
+            # prereq. 0.38 is a floor rather than a preference: 0.35 through
+            # 0.37 disabled the PKCS#1 v1.5 padding that RFC 5849 3.4.3
+            # mandates, and 0.38 re-enabled it.
+            runtime => { recommends => { 'Crypt::OpenSSL::RSA' => '0.38' } },
+            test    => { recommends => { 'Crypt::OpenSSL::RSA' => '0.38' } },
+        },
         resources => {
-            bugtracker => 'https://rt.cpan.org/Public/Dist/Display.html?Name=Net-OAuth',
-            repository => 'https://github.com/keeth/Net-OAuth.git',
+            bugtracker => {
+                web => 'https://rt.cpan.org/Public/Dist/Display.html?Name=Net-OAuth',
+            },
+            repository => {
+                url  => 'https://github.com/keeth/Net-OAuth.git',
+                web  => 'https://github.com/keeth/Net-OAuth',
+                type => 'git',
+            },
         },
     },
 );
