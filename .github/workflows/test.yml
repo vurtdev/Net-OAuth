@@ -57,7 +57,11 @@ jobs:
         rsa:
           - '0.34'    # last release before PKCS#1 v1.5 was disabled
           - '0.37'    # v1.5 disabled: RSA-SHA1 impossible, tests must skip
-          - '0.38'    # v1.5 re-enabled (PR #103)
+          # 0.38 re-enabled v1.5 (PR #103) and would be the natural boundary
+          # to pin, but it was superseded by 0.39 the same day, deleted from
+          # CPAN, and its Makefile.PL does not configure. 0.39 is the first
+          # installable release with v1.5 back.
+          - '0.39'
           - 'latest'
 
     steps:
