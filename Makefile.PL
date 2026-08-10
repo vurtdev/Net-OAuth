@@ -4,7 +4,10 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
     'NAME'          => 'Net::OAuth',
-    'AUTHOR'        => 'Robert Rothenberg <rrwo@cpan.org>',
+    'AUTHOR'        => [
+        'Keith Grennan <foss@nearlyfree.org>',
+        'Robert Rothenberg <perl@rhizomnic.com>',
+    ],
     "LICENSE"       => 'perl',
     'ABSTRACT_FROM' => 'lib/Net/OAuth.pm',
     'VERSION_FROM'  => 'lib/Net/OAuth.pm',
@@ -23,6 +26,10 @@ WriteMakefile(
         'Test::Warn'               => '0.21',
         'URI'                      => '5.15'
     },
+    # The source itself parses as 5.006, but URI and MIME::Base32 both require
+    # 5.008001, so that is the real floor. CI covers 5.16 and up; anything
+    # older is supported-but-untested rather than known-broken.
+    'MIN_PERL_VERSION' => '5.008001',
     'INSTALLDIRS' => 'site',
     'EXE_FILES'   => [],
     'PL_FILES'    => {},
