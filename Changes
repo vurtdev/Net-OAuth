@@ -28,6 +28,13 @@ Revision history for Net-OAuth
 
        - Added author tests under xt/, guarded by AUTHOR_TESTING.
 
+       - Corrected the AUTHOR metadata, which credited only the current
+         maintainer. Keith Grennan is the author and copyright holder;
+         Robert Rothenberg maintains.
+
+       - Updated .mailmap and the AUTHOR POD to canonicalise on reachable
+         addresses, as cpan.org no longer forwards mail.
+
        - MANIFEST now ships CONTRIBUTING.md, and no longer lists the
          generated META.json and META.yml, which distmeta writes into the
          distribution directory regardless.

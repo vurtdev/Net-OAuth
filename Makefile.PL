@@ -4,7 +4,14 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
     'NAME'          => 'Net::OAuth',
-    'AUTHOR'        => 'Robert Rothenberg <rrwo@cpan.org>',
+    # An arrayref needs ExtUtils::MakeMaker 6.57_02 or later, which perl 5.14
+    # and up ship. On anything older this stringifies as ARRAY(0x...) in the
+    # locally generated META, which nothing consumes -- the META that reaches
+    # CPAN is written by the release toolchain, not the installer's.
+    'AUTHOR'        => [
+        'Keith Grennan <foss@nearlyfree.org>',
+        'Robert Rothenberg <perl@rhizomnic.com>',
+    ],
     "LICENSE"       => 'perl',
     'ABSTRACT_FROM' => 'lib/Net/OAuth.pm',
     'VERSION_FROM'  => 'lib/Net/OAuth.pm',
