@@ -50,8 +50,13 @@ sub smart_require {
     my $required_class = shift;
     my $croak_on_error = shift || 0;
     unless (exists $ALREADY_REQUIRED{$required_class}) {
-        $ALREADY_REQUIRED{$required_class} = eval "require $required_class";
-        croak $@ if $@ and $croak_on_error;
+        my $rv = eval "require $required_class";
+        my $error = $@;
+        if ($error) {
+            croak $error if $croak_on_error;
+            return 0;
+        }
+        $ALREADY_REQUIRED{$required_class} = $rv;
     }
     return $ALREADY_REQUIRED{$required_class};
 }

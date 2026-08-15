@@ -1,5 +1,10 @@
 Revision history for Net-OAuth
 
+       [Security]
+       - The Net::OAuth smart_require function no longer memoizes
+         failures, which allowed attackers to exhaust memory with
+         requests for invalid signature methods. CVE-2026-72888
+
        [Bug Fixes]
        - RSA-SHA1 now pins PKCS#1 v1.5 padding and the SHA-1 hash rather
          than inheriting Crypt::OpenSSL::RSA's defaults, which have drifted
