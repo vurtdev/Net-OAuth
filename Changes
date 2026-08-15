@@ -12,6 +12,9 @@ Revision history for Net-OAuth
          produced RSA-PSS signatures that no RFC 5849 3.4.3 compliant server
          will accept. Reported as Debian #1142954.
 
+       [Other]
+       - Switched to use Crypt::SysRandom for generating random bytes.
+
        [Tests]
        - t/02-rsa.t asserts the signature base string separately from the
          signature, so a failure distinguishes base-string construction from

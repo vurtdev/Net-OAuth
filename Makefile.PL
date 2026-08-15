@@ -18,7 +18,7 @@ WriteMakefile(
     'PREREQ_PM' => {
         'Class::Accessor'          => '0.31',
         'Class::Data::Inheritable' => '0.06',
-        'Crypt::URandom'           => '0.37',
+        'Crypt::SysRandom'         => '0.006',
         'Digest::SHA'              => '5.47',
         'Encode'                   => '2.35',
         'LWP::UserAgent'           => '1',
@@ -46,7 +46,10 @@ WriteMakefile(
         # prereq. 0.38 is a floor rather than a preference: 0.35 through 0.37
         # disabled the PKCS#1 v1.5 padding that RFC 5849 3.4.3 mandates, and
         # 0.38 re-enabled it.
-        recommends => { 'Crypt::OpenSSL::RSA' => '0.38' },
+        recommends => {
+            'Crypt::OpenSSL::RSA'  => '0.38',
+            'Crypt::SysRandom::XS' => '0.010',
+        },
         resources => {
             bugtracker => 'https://rt.cpan.org/Public/Dist/Display.html?Name=Net-OAuth',
             repository => 'https://github.com/keeth/Net-OAuth.git',
