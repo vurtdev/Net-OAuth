@@ -5,6 +5,11 @@ Revision history for Net-OAuth
          failures, which allowed attackers to exhaust memory with
          requests for invalid signature methods. CVE-2026-72888
 
+       - Net::OAuth::Client no longer allows silent downgrades from
+         OAuth 1.0a to 1.0 when the remote provider drops the
+         oauth_verifier.  The behavior can be re-enabled with the
+         allow_v1a_downgrade option. CVE-2026-72887
+
        [Bug Fixes]
        - RSA-SHA1 now pins PKCS#1 v1.5 padding and the SHA-1 hash rather
          than inheriting Crypt::OpenSSL::RSA's defaults, which have drifted

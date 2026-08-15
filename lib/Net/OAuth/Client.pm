@@ -2,7 +2,7 @@ package Net::OAuth::Client;
 use warnings;
 use strict;
 use base qw(Class::Accessor::Fast);
-__PACKAGE__->mk_accessors(qw/id secret callback is_v1a user_agent site debug session/);
+__PACKAGE__->mk_accessors(qw/id secret callback is_v1a user_agent site debug session allow_v1a_downgrade/);
 use LWP::UserAgent;
 use URI;
 use Net::OAuth;
@@ -84,9 +84,39 @@ AKA Consumer Secret - you get this from the service provider when you register y
 
 =item * $params{session}
 
+=item * $params{allow_v1a_downgrade}
+
+Permit the fallback to OAuth 1.0 described in L</OAUTH 1.0A AND THE
+CALLBACK CONFIRMATION>. Off by default.
+
 =back
 
 =back
+
+=head2 OAUTH 1.0A AND THE CALLBACK CONFIRMATION
+
+Passing a C<callback> to C<new> selects OAuth 1.0a. In 1.0a the service
+provider echoes C<oauth_callback_confirmed> in its request token response,
+and later hands the user back with an C<oauth_verifier> that the client
+must present when it exchanges the request token for an access token.
+
+If the provider's request token response does not contain
+C<oauth_callback_confirmed>, this client cannot use 1.0a. It used to drop
+back to plain OAuth 1.0 by itself, and that fallback was invisible: the
+access token request is then built from the 1.0 message class, which has
+no C<verifier> parameter, so C<oauth_verifier> is quietly left off the
+wire even when the caller passed one to L</get_access_token>. The verifier
+is exactly what 1.0a added to stop an attacker starting a flow, getting a
+victim to authorize the attacker's request token, and then completing the
+exchange - so an application that asked for 1.0a and silently got 1.0 is
+open to that, with nothing to tell it so.
+
+C<get_request_token> now croaks in that situation instead. An application
+that has to talk to a provider which is not 1.0a can opt in with
+
+  allow_v1a_downgrade => 1
+
+which restores the fallback and warns rather than dying.
 
 =cut
 
@@ -166,7 +196,22 @@ sub get_request_token {
     $self->request_token_method => $oauth_req->to_url
   ));
   my $oauth_res = $self->_parse_oauth_response('get a request token', $http_res);
-  $self->is_v1a(0) unless defined $oauth_res->{callback_confirmed};
+  if ($self->is_v1a and !defined $oauth_res->{callback_confirmed}) {
+    # The application asked for OAuth 1.0a by configuring a callback and the
+    # provider did not confirm it.  Dropping to 1.0 here also drops
+    # oauth_verifier from the access token request further down, which is
+    # the parameter 1.0a added to prevent session fixation, so this is not a
+    # decision to take on the application's behalf without telling it.
+    croak "Unable to get a request token: the service provider did not "
+        . "confirm the OAuth 1.0a callback (no oauth_callback_confirmed in "
+        . "its response). Pass allow_v1a_downgrade => 1 to "
+        . "Net::OAuth::Client->new to fall back to OAuth 1.0 instead"
+      unless $self->allow_v1a_downgrade;
+    carp "Net::OAuth::Client warning: service provider did not confirm the "
+       . "OAuth 1.0a callback; falling back to OAuth 1.0, so oauth_verifier "
+       . "will not be sent";
+    $self->is_v1a(0);
+  }
   return $oauth_res;
 }
 
@@ -197,6 +242,15 @@ sub get_access_token {
 
   if (defined $self->session) {
     $params{token_secret} = $self->session->($token);
+  }
+
+  # In OAuth 1.0 mode the access token request class has no verifier message
+  # parameter, so gather_message_parameters() would drop this on the floor
+  # without a word.  Say so rather than sending a request that is missing
+  # the credential the caller believed it was presenting.
+  if (defined $verifier and !$self->is_v1a) {
+    carp "Net::OAuth::Client warning: an oauth_verifier was supplied but "
+       . "this client is in OAuth 1.0 mode, so it will not be sent";
   }
 
   my $oauth_req = $self->_make_request(
