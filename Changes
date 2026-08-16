@@ -4,6 +4,8 @@ Revision history for Net-OAuth
        - Updated the GitHub repository location, which moved before the version 0.32 release.
          (The former location does redirect to the new location.)
 
+       - Removed CONTRIBUTING.md due to changes in the AI policy.
+
 0.32   Sun 16 Aug 00:51:04 BST 2026
        [Security]
        - The Net::OAuth smart_require function no longer memoizes
