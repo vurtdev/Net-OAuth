@@ -18,7 +18,7 @@ See [AI Contributions](#ai-contributions) below for more more details.
 ## Report Bugs and Submit Feature Requests
 
 Please report any bugs or feature requests on the bugtracker website
-[https://github.com/keeth/Net-OAuth/issues](https://github.com/keeth/Net-OAuth/issues).
+[https://github.com/vurtdev/Net-OAuth/issues](https://github.com/vurtdev/Net-OAuth/issues).
 
 When submitting a bug or request, please include a test-file or a patch to an
 existing test-file that illustrates the bug or desired feature.
@@ -36,7 +36,7 @@ Security issues should not be reported on the bugtracker website. Please see
 ## Submitting Patches
 
 The source code is available via GitHub at
-[https://github.com/keeth/Net-OAuth](https://github.com/keeth/Net-OAuth).
+[https://github.com/vurtdev/Net-OAuth](https://github.com/vurtdev/Net-OAuth).
 
 Patches should be based on a recent fork of the `main` branch.
 
