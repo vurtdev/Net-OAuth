@@ -1,12 +1,14 @@
 package Net::OAuth::SignatureMethod::HMAC_SHA1;
 use warnings;
 use strict;
+use Carp;
 use Digest::SHA ();
 use MIME::Base64;
 
 sub sign {
     my $self = shift;
     my $request = shift;
+    croak "Cannot use a blank signature_key" unless length( $request->signature_key || "" ) > 0;
     my $hmac_digest = Digest::SHA::hmac_sha1(
         $request->signature_base_string, $request->signature_key
     );
