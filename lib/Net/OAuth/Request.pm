@@ -31,6 +31,7 @@ __PACKAGE__->mk_classdata(optional_api_params => [qw/
     token_secret
     extra_params
     protocol_version
+    allowed_signature_methods
     /]);
 
 __PACKAGE__->mk_classdata(signature_elements => [qw/

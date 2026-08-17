@@ -1,5 +1,12 @@
 Revision history for Net-OAuth
 
+       [Security]
+       - Restrict the verification algorithm to those specified in the allowed_signature_methods, which is
+         now required.  THIS IS A BREAKING CHANGE.
+
+         See https://github.com/vurtdev/Net-OAuth/security/advisories/GHSA-c8rm-g5cm-4pf5 (CVE-2026-72889)
+         for more information.
+
        [Documentation]
        - Updated the GitHub repository location, which moved before the version 0.32 release.
          (The former location does redirect to the new location.)

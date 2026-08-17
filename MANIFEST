@@ -42,6 +42,7 @@ t/10-misc.t
 t/11-spec-1.0a.t
 t/12-xauth.t
 t/13-hmac-sha256.t
+t/14-allowed-signature-methods.t
 t/15-client-v1a-downgrade.t
 t/rsakey
 t/rsakey.pub
