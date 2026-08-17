@@ -16,6 +16,7 @@ __PACKAGE__->mk_classdata(required_api_params => [qw/
 __PACKAGE__->mk_classdata(optional_api_params => [qw/
 	extra_params
 	protocol_version
+	allowed_signature_methods
 	/]);
 
 __PACKAGE__->mk_classdata(signature_elements => [qw/
