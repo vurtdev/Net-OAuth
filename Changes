@@ -16,6 +16,8 @@ Revision history for Net-OAuth
 
        - Removed CONTRIBUTING.md due to changes in the AI policy.
 
+       - Updated copyright year.
+
 0.32   Sun 16 Aug 00:51:04 BST 2026
        [Security]
        - The Net::OAuth smart_require function no longer memoizes
