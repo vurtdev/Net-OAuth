@@ -12,6 +12,7 @@ lib/Net/OAuth/Request.pm
 lib/Net/OAuth/RequestTokenRequest.pm
 lib/Net/OAuth/RequestTokenResponse.pm
 lib/Net/OAuth/Response.pm
+lib/Net/OAuth/SignatureMethod.pm
 lib/Net/OAuth/SignatureMethod/HMAC_SHA1.pm
 lib/Net/OAuth/SignatureMethod/HMAC_SHA256.pm
 lib/Net/OAuth/SignatureMethod/PLAINTEXT.pm

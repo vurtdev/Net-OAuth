@@ -1,6 +1,10 @@
 package Net::OAuth::SignatureMethod::HMAC_SHA1;
+
 use warnings;
 use strict;
+
+use base 'Net::OAuth::SignatureMethod';
+
 use Carp;
 use Digest::SHA ();
 use MIME::Base64;
@@ -18,7 +22,7 @@ sub sign {
 sub verify {
     my $self = shift;
     my $request = shift;
-    return $request->signature eq $self->sign($request);
+    return $self->secure_compare( $request->signature, $self->sign($request) );
 }
 
 =head1 NAME

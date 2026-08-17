@@ -1,6 +1,9 @@
 package Net::OAuth::SignatureMethod::PLAINTEXT;
+
 use warnings;
 use strict;
+
+use base 'Net::OAuth::SignatureMethod';
 
 sub sign {
     my $self = shift;
@@ -11,7 +14,7 @@ sub sign {
 sub verify {
     my $self = shift;
     my $request = shift;
-    return $request->signature eq $self->sign($request);
+    return $self->secure_compare( $request->signature, $self->sign($request) );
 }
 
 =head1 NAME

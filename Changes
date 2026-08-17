@@ -10,6 +10,8 @@ Revision history for Net-OAuth
 
        - HMAC_SHA1 and HMAC_SHA256 signature keys cannot be blank.
 
+       - HMAC_SHA1, HMAC_SHA256 and PLAINTEXT signature verification now use constant-time comparison (CVE-2026-75589).
+
        [Documentation]
        - Updated the GitHub repository location, which moved before the version 0.32 release.
          (The former location does redirect to the new location.)
