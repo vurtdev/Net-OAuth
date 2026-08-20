@@ -3,11 +3,14 @@ package Net::OAuth::SignatureMethod::PLAINTEXT;
 use warnings;
 use strict;
 
+use Carp;
+
 use base 'Net::OAuth::SignatureMethod';
 
 sub sign {
     my $self = shift;
     my $request = shift;
+    croak "Cannot use a blank signature_key" unless length( $request->signature_key || "" ) > 0;
     return $request->signature_key;
 }
 

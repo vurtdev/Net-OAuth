@@ -1,5 +1,8 @@
 Revision history for Net-OAuth
 
+       [Security]
+       - PLAINTEXT signature keys cannot be blank.
+
 0.33   Mon 17 Aug 23:14:01 BST 2026
        [Security]
        - Restrict the verification algorithm to those specified in the allowed_signature_methods, which is
