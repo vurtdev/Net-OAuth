@@ -4,8 +4,10 @@ use strict;
 use warnings;
 
 # SPDX-SnippetBegin
+# SPDX-PackageName: pkg:cpan/Crypt-Passphrase@0.023
 # SPDX-SnippetCopyrightText: 2021 by Leon Timmermans.
 # SPDX-License-Identifier: The Artistic License 2.0 (GPL Compatible)
+# SPDX-Description: taken from Crypt::Passphrase::Validator 0.023
 
 sub secure_compare {
     my ( $self, $up, $down ) = @_;
